@@ -14,6 +14,7 @@
 */
 #include <iostream>
 #include <ostream>
+#include <vcruntime_string.h>
 
 #define DEFAULT_CAPACITY 3
 
@@ -98,11 +99,32 @@ class Vector {
  * @param lo
  * @param hi
  */
+// template <typename T> // 复制的向量构造器
+// void Vector<T>::CopyFrom(const T* const src, Rank lo, Rank hi) {
+//     _element = new T[_capacity = (hi - lo) * 2]; // 新的规模、大小和内容
+//     _size = hi - lo;
+//     memcpy(_element, src, hi - lo);
+// }
+
 template <typename T>
-void Vector<T>::CopyFrom(const T* const src, Rank lo, Rank hi) {
-    _element = new T[_capacity = (hi - lo) * 2];
-    _size = hi - lo;
-    memcpy(_element, src, hi - lo);
+void Vector<T>::Expand() {
+    if (_size < _capacity)
+        return;
+    if (_capacity < DEFAULT_CAPACITY)
+        _capacity = DEFAULT_CAPACITY;
+    T* oldElement = _element;
+    _element = new T[_capacity <<= 1];
+    memcpy(_element, oldElement, _size);
+    delete[] oldElement;
+}
+
+// 重载赋值运算符
+template <typename T>
+Vector<T>& Vector<T>::operator=(const Vector<T>& v) {
+    if (_element)
+        delete[] _element;
+    CopyFrom(v._element, 0, v._size);
+    return *this;
 }
 
 template <typename T>
