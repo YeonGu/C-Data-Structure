@@ -13,6 +13,7 @@
    构造和析构函数
 */
 #include <iostream>
+#include <ostream>
 
 #define DEFAULT_CAPACITY 3
 
@@ -26,7 +27,7 @@ using Rank = int;
 
 template <typename T>
 class Vector {
-  private:
+  protected:
     int _capacity;
     Rank _size;
     T* _element; // 指向元素存储区的指针
@@ -85,6 +86,31 @@ class Vector {
 
     // 遍历
     // void Traverse
+
+    friend std::ostream& operator<<(std::ostream& stream, Vector<T> const& e);
 };
+
+/**
+ * @brief 数组整体复制
+ *
+ * @tparam T
+ * @param src
+ * @param lo
+ * @param hi
+ */
+template <typename T>
+void Vector<T>::CopyFrom(const T* const src, Rank lo, Rank hi) {
+    _element = new T[_capacity = (hi - lo) * 2];
+    _size = hi - lo;
+    memcpy(_element, src, hi - lo);
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& stream, Vector<T> const& e) {
+    for (int i = 0; i < e->_size; i++) {
+        stream << *(e->_element + i) << ", ";
+    }
+    return stream;
+}
 
 int main() {}
