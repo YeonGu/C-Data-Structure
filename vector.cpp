@@ -14,6 +14,7 @@
 */
 #include <iostream>
 #include <ostream>
+#include <xstring>
 
 #define DEFAULT_CAPACITY 3
 
@@ -34,7 +35,12 @@ class Vector {
 
   protected:
     void CopyFrom(const T* const src, Rank lo,
-                  Rank hi);            // copy vector from array in [lo, hi)
+                  Rank hi); // copy vector from array in [lo, hi)
+    // 向量整体置乱
+    void Permute(Vector<T>& v) {
+        for (int i = v._size; i > 0; i--)
+            std::swap(v[i - 1], v[rand() % i]); // [i-1] 和 [0, i) 中任意元素交换
+    }
     void Expand();                     // 扩容
     void Shrink();                     // 压缩
     bool Bubble(Rank lo, Rank hi);     // 扫描交换
