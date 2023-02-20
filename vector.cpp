@@ -14,7 +14,6 @@
 */
 #include <iostream>
 #include <ostream>
-#include <vcruntime_string.h>
 
 #define DEFAULT_CAPACITY 3
 
@@ -118,6 +117,19 @@ void Vector<T>::Expand() {
     delete[] oldElement;
 }
 
+template <typename T>
+void Vector<T>::Shrink() {
+    if (_size <= DEFAULT_CAPACITY << 1)
+        return;
+    if (_capacity <= _size << 2) // capacity足够大，当小于size的四倍时不启用shrink
+        return;
+
+    T* oldElement = _element;
+    _element = new T[_capacity >>= 1]; // 容量减半
+    memcpy(_element, oldElement, _size);
+    delete[] oldElement;
+}
+
 // 重载赋值运算符
 template <typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& v) {
@@ -125,6 +137,11 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& v) {
         delete[] _element;
     CopyFrom(v._element, 0, v._size);
     return *this;
+}
+// 重载下标引用
+template <typename T>
+T& Vector<T>::operator[](Rank r) const {
+    return _element[r];
 }
 
 template <typename T>
